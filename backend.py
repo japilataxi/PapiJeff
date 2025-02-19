@@ -64,13 +64,13 @@ async def analyze_text(data: dict):
         raise HTTPException(status_code=400, detail="No se recibió texto")
 
     response = qclient.chat.completions.create(
-        messages=[{"role": "user", "content": text}],
-        model="llama-3.3-70b-specdec",
+        messages=[
+                    {"role": "system", "content": "Responde siempre en español de acuerdo a lo que te pregunte el usuario exactamente."},
+                    {"role": "user", "content": text}
+                ],
+        #model="llama-3.3-70b-specdec",
+        model="mixtral-8x7b-32768",
         stream=False
     )
 
     return {"response": response.choices[0].message.content}
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, port=8000, reload=True)
